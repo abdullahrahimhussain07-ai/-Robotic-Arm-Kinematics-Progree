@@ -3,6 +3,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 
+plt.rcParams["figure.facecolor"] = "white"
+plt.rcParams["axes.facecolor"] = "white"
+plt.rcParams["savefig.facecolor"] = "white"
+
 
 class ThreeDOFArm:
     def __init__(self, d1=0.20, l2=0.35, l3=0.30, joint_limits_deg=None, min_z=0.0):
@@ -106,7 +110,7 @@ def generate_multi_point_trajectory(pick_bin, place_targets, clearance=0.12, ste
     return np.vstack(all_pts), np.concatenate(all_grip)
 
 
-def plot_workspace_envelope(ax3d, arm, alpha=0.05):
+def plot_workspace_envelope(ax3d, arm, alpha=0.06):
     r_max = arm.l2 + arm.l3
     u = np.linspace(0, 2 * np.pi, 28)
     v = np.linspace(0, np.pi / 2, 16)
@@ -146,10 +150,10 @@ def main():
     warnings = arm.validate_trajectory(joint_traj_deg, path)
     print(f"Points: {len(path)} | Max FK/IK error: {max_err:.3e} m | Warnings: {len(warnings)}")
 
-    fig = plt.figure(figsize=(16, 9))
+    fig = plt.figure(figsize=(16, 9), facecolor="white")
     gs = GridSpec(4, 2, width_ratios=[1.15, 1.0], wspace=0.28, hspace=0.45)
 
-    ax3d = fig.add_subplot(gs[:, 0], projection="3d")
+    ax3d = fig.add_subplot(gs[:, 0], projection="3d", facecolor="white")
     plot_workspace_envelope(ax3d, arm)
     ax3d.plot(path[:, 0], path[:, 1], path[:, 2], color="navy", lw=2.0, label="EE Path")
     ax3d.scatter(*pick_bin, color="limegreen", s=75, edgecolor="black", label="Pick Bin")
@@ -162,32 +166,32 @@ def main():
     ax3d.set_ylabel("Y (m)")
     ax3d.set_zlabel("Z (m)")
     ax3d.set_title("3-DOF Manipulator Multi-Point Pick & Place")
-    ax3d.legend(loc="upper left", fontsize=8)
+    ax3d.legend(loc="upper left", fontsize=8, facecolor="white")
 
-    ax_pos = fig.add_subplot(gs[0, 1])
+    ax_pos = fig.add_subplot(gs[0, 1], facecolor="white")
     ax_pos.plot(t, joint_traj_deg[:, 0], label="q1 Yaw")
     ax_pos.plot(t, joint_traj_deg[:, 1], label="q2 Shoulder")
     ax_pos.plot(t, joint_traj_deg[:, 2], label="q3 Elbow")
     ax_pos.set_ylabel("Angle (deg)")
     ax_pos.set_title("Joint Trajectories & Gripper State")
     ax_pos.grid(True, alpha=0.3)
-    ax_pos.legend(loc="upper right", fontsize=7.5, ncol=3)
+    ax_pos.legend(loc="upper right", fontsize=7.5, ncol=3, facecolor="white")
 
-    ax_vel = fig.add_subplot(gs[1, 1], sharex=ax_pos)
+    ax_vel = fig.add_subplot(gs[1, 1], sharex=ax_pos, facecolor="white")
     ax_vel.plot(t, q_vel_deg[:, 0], label="dq1/dt")
     ax_vel.plot(t, q_vel_deg[:, 1], label="dq2/dt")
     ax_vel.plot(t, q_vel_deg[:, 2], label="dq3/dt")
     ax_vel.set_ylabel("Vel (deg/s)")
     ax_vel.grid(True, alpha=0.3)
 
-    ax_acc = fig.add_subplot(gs[2, 1], sharex=ax_pos)
+    ax_acc = fig.add_subplot(gs[2, 1], sharex=ax_pos, facecolor="white")
     ax_acc.plot(t, q_acc_deg[:, 0], label="d2q1/dt2")
     ax_acc.plot(t, q_acc_deg[:, 1], label="d2q2/dt2")
     ax_acc.plot(t, q_acc_deg[:, 2], label="d2q3/dt2")
     ax_acc.set_ylabel("Acc (deg/s^2)")
     ax_acc.grid(True, alpha=0.3)
 
-    ax_grip = fig.add_subplot(gs[3, 1], sharex=ax_pos)
+    ax_grip = fig.add_subplot(gs[3, 1], sharex=ax_pos, facecolor="white")
     ax_grip.step(t, gripper, where="post", color="teal", lw=2.0)
     ax_grip.set_yticks([0, 1])
     ax_grip.set_yticklabels(["Open", "Closed"])
@@ -196,8 +200,8 @@ def main():
     ax_grip.set_ylabel("Gripper")
     ax_grip.grid(True, alpha=0.3)
 
-    plt.savefig("pick_and_place_trace.png", dpi=200, bbox_inches="tight")
-    print("Saved pick_and_place_trace.png")
+    plt.savefig("pick_and_place_trace.png", dpi=200, bbox_inches="tight", facecolor="white")
+    print("Saved white-background graph to pick_and_place_trace.png")
     plt.close(fig)
 
 
